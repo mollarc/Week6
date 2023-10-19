@@ -16,7 +16,7 @@ internal class Program
         string sqlConStr = mySqlConBldr.ToString();
         Console.WriteLine(sqlConStr);
         string[] files = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Files");
-        foreach(var file in files)
+        foreach(var file in files)// Reads the file and outputs the contents into the Produce Table
         {
             if (file.Contains("_Output"))
             {
@@ -41,7 +41,7 @@ internal class Program
                 }
             }
         }
-        using (SqlConnection conn = new SqlConnection(sqlConStr))
+        using (SqlConnection conn = new SqlConnection(sqlConStr)) // First deletes items past sell by date
         {
             conn.Open();
             string inlineSQL = $@"DELETE FROM [dbo].[Produce] WHERE [Sell_by_Date] < GETDATE()"; //https://learn.microsoft.com/en-us/sql/t-sql/functions/getdate-transact-sql?view=sql-server-ver16 Get date
@@ -51,7 +51,7 @@ internal class Program
             }
             conn.Close();
         }
-        using (SqlConnection conn = new SqlConnection(sqlConStr))
+        using (SqlConnection conn = new SqlConnection(sqlConStr))// Replaces Locations containing Character "F" to Character "Z"  
         {
             conn.Open();
             string inlineSQL = @"UPDATE [dbo].[Produce] SET [Location] = Replace([Location],'F','Z')"; //https://www.w3schools.com/sql/func_sqlserver_replace.asp For Replace Function 
@@ -61,7 +61,7 @@ internal class Program
             }
             conn.Close();
         }
-        using (SqlConnection conn = new SqlConnection(sqlConStr))
+        using (SqlConnection conn = new SqlConnection(sqlConStr)) // Increases price of all items by 1.00
         {
             conn.Open();
             string inlineSQL = @"UPDATE [dbo].[Produce] SET [Price] = [Price] + 1";
@@ -71,7 +71,7 @@ internal class Program
             }
             conn.Close();
         }
-        using (SqlConnection conn = new SqlConnection(sqlConStr))
+        using (SqlConnection conn = new SqlConnection(sqlConStr)) // Reads from table and outputs to new text file
         {
             conn.Open();
             string inlineSQL = @"Select * from Produce";
